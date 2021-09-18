@@ -51,6 +51,6 @@ produces estimates of the population size in a frequentist framework under the
 sensitivity analysis for the no-highest-order interaction assumption, which are saved in 
 the directory `nhoi_fits`.
 5. Run the `R` script `sensitivity_analysis_marg_nhoi_plotting.R`. This produces 
-Table 4 presented in Section 5.4. The plot is saved in the folder `plots`.
+Table 4 presented in Section 5.4. 
 6. Run the `R` script `sensitivity_analysis_nhoi_plotting.R`. This produces 
-Table 19 presented in Appendix E.3. The plot is saved in the folder `plots`.
+Table 19 presented in Appendix E.3. 
