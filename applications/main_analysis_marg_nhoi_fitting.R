@@ -7,7 +7,8 @@ library(dplyr)
 source("helper_functions.R")
 
 # This file contains code used to analyze the Kosovo data set using the 
-# 2-list marginal no-highest-order interaction assumption
+# 2-list marginal no-highest-order interaction assumption, in a Bayesian 
+# framework
 
 #### Read in Kosovo data from the LCMCR package ####
 data(kosovo_aggregate)

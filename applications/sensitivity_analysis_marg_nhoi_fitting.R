@@ -2,7 +2,8 @@ library(dplyr)
 source("helper_functions.R")
 
 # This file contains code used to perform a sensitivity analysis for the 2-list 
-# marginal no-highest-order interaction assumption for the Kosovo data set
+# marginal no-highest-order interaction assumption for the Kosovo data set, in a
+# Bayesian framework
 
 #### Load posterior samples ####
 load("marg_nhoi_fits/N_samples.RData")

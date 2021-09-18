@@ -101,7 +101,7 @@ get_pi_0_marg_hoi <- function(pi_tilde_mat, K, list_1, list_2, xi = exp(0)){
                 byrow = TRUE)[, K:1]
     
     X_marg <- matrix(as.numeric(intToBits(0:(2 ^ 2 - 1))), nrow = 2 ^ 2, 
-                    byrow = TRUE)[, 2:1]
+                     byrow = TRUE)[, 2:1]
     pi_tilde_marg <- matrix(0, nrow = nrow(pi_tilde_mat), ncol = 4)
     
     X <- X[2:(2 ^ K), ]
@@ -148,4 +148,35 @@ n_0_sampler_nbinom <- function(pi_0, M, a, n){
 # under the improper scale prior for N, sample from the posterior for n_0
 n_0_sampler_isp <- function(pi_0, n){
     rnbinom(length(pi_0), size = n, prob = 1 - pi_0) 
+}
+
+# Given a contingency table of data, cont, estimate the population size in a 
+# frequentist framework using a highest order interaction of xi
+# The last row of cont should correspond to the inclusion pattern (1, ..., 1)
+# and the last column of cont should be named Freq
+get_N_hoi_freq <- function(cont, xi = exp(0)){
+    K <- ncol(cont) - 1
+    
+    # When specifying the offset, need to be careful and make sure you're using 
+    # right parameterization since xi doesn't exactly correspond to 
+    # exp(interaction) (i.e. sometimes it's exp(-interaction))
+    cont$offset <- c(rep(0, (2 ^ K) - 2), ((-1) ^ (1 - K %% 2)) * log(xi))
+    
+    col_names <- colnames(cont)[1:K]
+    if(K > 2){
+        form <- paste0("Freq ~ (", paste(col_names, collapse = " + "),
+                       ") ^ ", (K - 1))
+    }
+    else{
+        form <- paste0("Freq ~ ", paste(col_names, collapse = " + "))
+    }
+    fit <- glm(form, data = cont, family = poisson, offset = offset)
+    N_est <- unname(sum(cont$Freq) + exp(fit$coef[1]))
+    var_intercept <- unname(summary(fit)$cov.unscaled[1, 1])
+    # See Rivest and Levesque (2001) equation (5) for justification of se
+    N_se  <- unname(sqrt(exp(fit$coef[1]) + 
+                             (exp(2 * fit$coef[1])) * var_intercept))
+    
+    return(c(est = N_est, se = N_se, lower = N_est - 1.96 * N_se, 
+             upper = N_est + 1.96 * N_se))
 }

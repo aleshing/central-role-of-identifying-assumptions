@@ -12,6 +12,9 @@ source("helper_functions.R")
 #### Load posterior samples ####
 load("marg_nhoi_fits/N_samples_sensitivity.RData")
 
+#### Load frequentist fit ####
+load("marg_nhoi_fits/Freq_fit_sensitivity.RData")
+
 #### Hyperparameters for negative-binomial priors for N ####
 M <- c(8000, 12000, 10000)
 a <- c(43, 9, 1.6)
@@ -103,15 +106,26 @@ ggsave("plots/sensitivity_analysis_marg_nhoi_plot4.pdf", height = 4, width = 6,
        units = "in")
 
 #### Table Used in Paper ####
-for_xtable <- N_lcmcr %>% filter(which == "Posterior", 
-                                 prior %in% c("Negative-Binomial")) %>% 
-    group_by(prior, interaction) %>% 
+for_xtable <- N_lcmcr %>% filter(which == "Posterior",
+                                 prior %in% c("Negative-Binomial")) %>%
+    group_by(prior, interaction) %>%
     summarise(mean = mean(N), lower = quantile(N, probs = 0.025),
               median = median(N), upper = quantile(N, probs = 0.975)) %>%
     mutate(field = paste0(floor(mean), " [", floor(lower), ", ", floor(upper),
                           "]")) %>%
-    ungroup() %>% select(field) %>% unlist() %>% matrix(nrow = 1, ncol = 4, 
-                                                        byrow = TRUE) 
+    ungroup() %>% select(field) %>% unlist() %>% matrix(nrow = 1, ncol = 4,
+                                                        byrow = TRUE)
 colnames(for_xtable) <- rev(xis)
 xtable(for_xtable)
+
+for_xtable_freq <- N_freq %>%
+    mutate(field = paste0(floor(est), " [", floor(lower), ", ", floor(upper),
+                          "]")) %>%
+    ungroup() %>% select(field) %>% unlist() %>% matrix(nrow = 1, ncol = 4, 
+                                                        byrow = TRUE) 
+colnames(for_xtable_freq) <- rev(xis)
+
+for_xtable_comb <- cbind(c("Frequentist", "Bayesian"), 
+                         rbind(for_xtable_freq, for_xtable))
+xtable(for_xtable_comb)
 

@@ -11,6 +11,10 @@ source("helper_functions.R")
 #### Load posterior samples ####
 load("nhoi_fits/N_samples_sensitivity.RData")
 
+
+#### Load frequentist fit ####
+load("nhoi_fits/Freq_fit_sensitivity.RData")
+
 #### Hyperparameters for negative-binomial priors for N ####
 M <- c(8000, 12000, 10000)
 a <- c(43, 9, 1.6)
@@ -118,3 +122,14 @@ for_xtable <- N_lcmcr %>% filter(which == "Posterior",
                                                         byrow = TRUE) 
 colnames(for_xtable) <- c("1 / 2", "2 / 3", "1", "3 / 2", "2")
 xtable(for_xtable)
+
+for_xtable_freq <- N_freq %>%
+    mutate(field = paste0(floor(est), " [", floor(lower), ", ", floor(upper),
+                          "]")) %>%
+    ungroup() %>% select(field) %>% unlist() %>% matrix(nrow = 1, ncol = 4, 
+                                                        byrow = TRUE) 
+colnames(for_xtable_freq) <- c("1 / 2", "2 / 3", "1", "3 / 2", "2")
+
+for_xtable_comb <- cbind(c("Frequentist", "Bayesian"), 
+                         rbind(for_xtable_freq, for_xtable))
+xtable(for_xtable_comb)

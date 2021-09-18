@@ -2,7 +2,8 @@ library(dplyr)
 source("helper_functions.R")
 
 # This file contains code used to perform a sensitivity analysis for the 
-# no-highest-order interaction assumption for the Kosovo data set
+# no-highest-order interaction assumption for the Kosovo data set, in a Bayesian
+# framework
 
 #### Load posterior samples ####
 load("nhoi_fits/pi_tilde_samples.RData")

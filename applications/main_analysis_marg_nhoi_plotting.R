@@ -77,6 +77,6 @@ for_xtable <- N_samples %>% filter(which == "Posterior",
                           "]")) %>% 
     ungroup() %>% select(field) %>% unlist() %>% matrix(nrow = 4, ncol = 2, 
                                                         byrow = FALSE) 
-rownames(for_xtable) <- models
+rownames(for_xtable) <- sort(models)
 colnames(for_xtable) <- c("Improper Scale Prior", "Negative-Binomial")
 xtable(for_xtable)
